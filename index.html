@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Limz Store PRO MAX</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background: radial-gradient(circle at top,#1a1a2e,#0f0f0f,#000);
+  color:white;
+}
+
+/* LOGIN */
+.center{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.box{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:25px;
+  border-radius:16px;
+  width:320px;
+  box-shadow:0 0 25px rgba(0,255,120,0.15);
+}
+
+input, select, textarea{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border:none;
+  border-radius:10px;
+  outline:none;
+  background:rgba(255,255,255,0.08);
+  color:white;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#00c853,#00e676);
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 15px #00e676;
+}
+
+/* HEADER */
+header{
+  padding:18px;
+  text-align:center;
+  background:linear-gradient(90deg,#ff004c,#7b2ff7);
+  box-shadow:0 0 15px rgba(255,0,150,0.3);
+  font-weight:bold;
+}
+
+/* CARDS */
+.box2{
+  background:rgba(255,255,255,0.06);
+  margin:10px;
+  padding:15px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
+
+/* PRODUCT */
+.product{
+  background:rgba(255,255,255,0.07);
+  margin:10px;
+  padding:15px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.08);
+  transition:0.2s;
+}
+
+.product:hover{
+  transform:translateY(-3px);
+  box-shadow:0 0 18px rgba(0,255,120,0.25);
+}
+
+/* HIDDEN */
+.hidden{display:none;}
+
+ul{padding-left:20px;}
+</style>
+
+</head>
+
+<body>
+
+<!-- 🔐 LOGIN -->
+<div id="loginPage" class="center">
+  <div class="box">
+
+    <h3>🔐 LOGIN STORE</h3>
+
+    <select id="role">
+      <option value="member">👤 Member</option>
+      <option value="admin">👑 Admin</option>
+    </select>
+
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <p id="msg"></p>
+
+    <p style="font-size:12px;color:gray;margin-top:10px;">
+      Note: member hubungi owner jika ingin akses penuh<br>
+      Telegram: <b>@limzchiter</b>
+    </p>
+
+  </div>
+</div>
+
+<!-- 🛒 APP -->
+<div id="app" class="hidden">
+
+<header>
+<h2>🔥 LIMZ STORE PRO MAX 🔥</h2>
+<p id="welcome"></p>
+</header>
+
+<!-- 👑 OWNER -->
+<div class="box2">
+<h3>👑 Owner Profile</h3>
+<p>LimzXxiterz | VIP Verified ✓</p>
+</div>
+
+<!-- 📞 CONTACT -->
+<div class="box2">
+<h3>📞 Contact Owner</h3>
+<p>Telegram: @limzchiter</p>
+<button onclick="contactOwner()">Chat Owner</button>
+</div>
+
+<!-- 👤 MEMBER -->
+<div id="memberBox" class="box2 hidden">
+<h3>👤 Member Area</h3>
+<p>✔ Bisa beli produk</p>
+<p>✔ Checkout</p>
+<p>❌ No admin access</p>
+<button onclick="contactOwner()">Contact Owner</button>
+</div>
+
+<!-- 👑 ADMIN -->
+<div id="adminInfo" class="box2 hidden">
+<h3>👑 Admin Area</h3>
+<p>✔ Full control system</p>
+</div>
+
+<!-- 👑 ADMIN PANEL -->
+<div id="adminPanel" class="box2 hidden">
+<h3>Admin Panel</h3>
+
+<input id="pname" placeholder="Nama produk">
+<input id="pprice" placeholder="Harga">
+<input id="pcat" placeholder="Kategori">
+
+<button onclick="addProduct()">Tambah Produk</button>
+</div>
+
+<!-- 🛒 PRODUCTS -->
+<div id="productList"></div>
+
+<!-- 🛍️ CART -->
+<div class="box2">
+<h3>Keranjang</h3>
+<ul id="cartList"></ul>
+<button onclick="checkout()">Checkout</button>
+</div>
+
+<!-- 💳 PAYMENT -->
+<div class="box2">
+<h3>💳 Payment</h3>
+<p>QRIS / Transfer / E-Wallet (manual)</p>
+</div>
+
+<!-- 🐞 FEEDBACK -->
+<div class="box2">
+<h3>🐞 Feedback</h3>
+
+<input id="fbName" placeholder="Nama">
+<textarea id="fbMsg" placeholder="Pesan"></textarea>
+
+<button onclick="sendFeedback()">Kirim</button>
+</div>
+
+</div>
+
+<script>
+
+/* USER */
+let adminUser="febri";
+let adminPass="23022010";
+
+let memberUser="buyer";
+let memberPass="buyer123";
+
+/* PRODUCTS */
+let products=[
+  {name:"DM FF 70",price:10000,category:"FF"},
+  {name:"DM ML 86",price:20000,category:"ML"},
+  {name:"Akun FF Sultan",price:50000,category:"FF"},
+  {name:"Akun ML Epic",price:60000,category:"ML"}
+];
+
+let cart=[];
+
+/* LOGIN */
+function login(){
+  let role=document.getElementById("role").value;
+  let user=document.getElementById("user").value;
+  let pass=document.getElementById("pass").value;
+
+  if(role==="admin"){
+    if(user===adminUser && pass===adminPass){
+      startApp(user,"admin");
+    }else{
+      document.getElementById("msg").innerText="Login admin gagal ❌";
+    }
+  }
+
+  if(role==="member"){
+    if(user===memberUser && pass===memberPass){
+      startApp(user,"member");
+    }else{
+      document.getElementById("msg").innerText="Login member gagal ❌";
+    }
+  }
+}
+
+/* START */
+function startApp(user,role){
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("app").classList.remove("hidden");
+
+  document.getElementById("welcome").innerText=
+    "Halo "+user+" ("+role+")";
+
+  if(role==="admin"){
+    document.getElementById("adminPanel").classList.remove("hidden");
+    document.getElementById("adminInfo").classList.remove("hidden");
+  }else{
+    document.getElementById("memberBox").classList.remove("hidden");
+  }
+
+  renderProducts();
+}
+
+/* PRODUCTS */
+function renderProducts(){
+  let list=document.getElementById("productList");
+  list.innerHTML="";
+
+  products.forEach((p,i)=>{
+    list.innerHTML+=`
+      <div class="product">
+        <h3>${p.name}</h3>
+        <p>${p.category}</p>
+        <p>Rp ${p.price}</p>
+        <button onclick="addCart(${i})">+ Keranjang</button>
+      </div>
+    `;
+  });
+}
+
+function addProduct(){
+  let n=document.getElementById("pname").value;
+  let p=document.getElementById("pprice").value;
+  let c=document.getElementById("pcat").value;
+
+  products.push({name:n,price:p,category:c});
+  renderProducts();
+}
+
+/* CART */
+function addCart(i){
+  cart.push(products[i]);
+  renderCart();
+}
+
+function renderCart(){
+  let list=document.getElementById("cartList");
+  list.innerHTML="";
+  cart.forEach(c=>{
+    list.innerHTML+=`<li>${c.name} - Rp ${c.price}</li>`;
+  });
+}
+
+/* CHECKOUT */
+function checkout(){
+  if(cart.length===0){
+    alert("Keranjang kosong ❌");
+    return;
+  }
+
+  let total=cart.reduce((a,b)=>a+Number(b.price),0);
+
+  alert("🧾 CHECKOUT\nTotal: Rp "+total);
+  cart=[];
+  renderCart();
+}
+
+/* FEEDBACK */
+function sendFeedback(){
+  let n=document.getElementById("fbName").value;
+  let m=document.getElementById("fbMsg").value;
+
+  alert("📩 Terkirim");
+
+  document.getElementById("fbName").value="";
+  document.getElementById("fbMsg").value="";
+}
+
+/* CONTACT */
+function contactOwner(){
+  window.open("https://t.me/limzchiter","_blank","noopener,noreferrer");
+}
+
+</script>
+
+</body>
+</html>
